@@ -448,14 +448,16 @@ static int
 lconcat(lua_State *L) {
 	if (!lua_istable(L,1))
 		return 0;
-	if (lua_geti(L,1,1) != LUA_TNUMBER)
+	lua_rawgeti(L,1,1);
+	if (lua_type(L, -1) != LUA_TNUMBER)
 		return 0;
 	int sz = lua_tointeger(L,-1);
 	lua_pop(L,1);
 	char * buff = skynet_malloc(sz);
 	int idx = 2;
 	int offset = 0;
-	while(lua_geti(L,1,idx) == LUA_TSTRING) {
+	lua_rawgeti(L,1,idx);
+	while(lua_type(L, -1) == LUA_TSTRING) {
 		size_t s;
 		const char * str = lua_tolstring(L, -1, &s);
 		if (s+offset > sz) {
@@ -466,6 +468,7 @@ lconcat(lua_State *L) {
 		lua_pop(L,1);
 		offset += s;
 		++idx;
+		lua_rawgeti(L,1,idx);
 	}
 	if (offset != sz) {
 		skynet_free(buff);
