@@ -368,8 +368,7 @@ get_pointer(lua_State *L, struct read_block *rb) {
 
 static void
 get_buffer(lua_State *L, struct read_block *rb, int len) {
-	char tmp[len];
-	char * p = rb_read(rb,tmp,len);
+	char * p = rb_read(rb,NULL,len);
 	if (p == NULL) {
 		invalid_stream(L,rb);
 	}
